@@ -1,0 +1,11 @@
+mutation {
+  createCategory {
+    category {
+      id
+      title
+      description
+      position
+    }
+    errors
+  }
+}

@@ -1,26 +1,46 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Home from "./views/Home.vue";
+import Vue from 'vue'
+import Router from 'vue-router'
+import Categories from './views/Categories.vue'
+import Levels from './views/Levels.vue'
+import Chapters from './views/Chapters.vue'
+import Lessons from './views/Lessons.vue'
+import Lesson from './views/lessons/Lesson.vue'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/",
-      name: "home",
-      component: Home
+      path: '/',
+      name: 'Home',
+      redirect: '/categories'
     },
     {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+      path: '/categories',
+      name: 'Categories',
+      component: Categories
+    },
+    {
+      path: '/levels',
+      name: 'Levels',
+      component: Levels
+    },
+    {
+      path: '/chapters',
+      name: 'Chapters',
+      component: Chapters
+    },
+    {
+      path: '/lessons',
+      name: 'Lessons',
+      component: Lessons
+    },
+    {
+      path: '/lessons/:id',
+      name: 'Lesson',
+      component: Lesson
     }
   ]
-});
+})

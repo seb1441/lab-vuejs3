@@ -1,0 +1,11 @@
+mutation {
+  createLevel {
+    level {
+      id
+      title
+      description
+      position
+    }
+    errors
+  }
+}

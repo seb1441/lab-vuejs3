@@ -1,0 +1,9 @@
+mutation {
+  createLesson {
+    lesson {
+      id
+      title
+    }
+    errors
+  }
+}

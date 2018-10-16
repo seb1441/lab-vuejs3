@@ -1,0 +1,8 @@
+query {
+  levels {
+    id
+    description
+    title
+    position
+  }
+}

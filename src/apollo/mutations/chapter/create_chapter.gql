@@ -1,0 +1,11 @@
+mutation {
+  createChapter {
+    chapter {
+      id
+      title
+      description
+      position
+    }
+    errors
+  }
+}

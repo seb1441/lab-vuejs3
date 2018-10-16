@@ -1,0 +1,7 @@
+mutation($categories: [CategoryInput!]!) {
+  updateCategories(categories: $categories) {
+    categories {
+      id
+    }
+  }
+}

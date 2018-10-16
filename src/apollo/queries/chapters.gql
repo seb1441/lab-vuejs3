@@ -1,0 +1,8 @@
+query {
+  chapters {
+    id
+    description
+    title
+    position
+  }
+}

@@ -1,0 +1,7 @@
+mutation($levels: [LevelInput!]!) {
+  updateLevels(levels: $levels) {
+    levels {
+      id
+    }
+  }
+}

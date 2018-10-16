@@ -1,0 +1,19 @@
+query($id: ID!) {
+  lesson(id: $id) {
+    id
+    title
+    description
+    level {
+      id
+      title
+    }
+    category {
+      id
+      title
+    }
+    chapter {
+      id
+      title
+    }
+  }
+}

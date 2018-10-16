@@ -1,0 +1,16 @@
+query($filters: LessonFiltersInput) {
+  lessons(filters: $filters) {
+    id
+    description
+    title
+    category {
+      title
+    }
+    level {
+      title
+    }
+    chapter {
+      title
+    }
+  }
+}

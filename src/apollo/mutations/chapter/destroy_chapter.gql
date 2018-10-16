@@ -1,0 +1,8 @@
+mutation($id: ID!) {
+  destroyChapter(id: $id) {
+    chapter {
+      id
+    }
+    errors
+  }
+}

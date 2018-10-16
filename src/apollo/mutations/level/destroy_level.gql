@@ -1,0 +1,8 @@
+mutation($id: ID!) {
+  destroyLevel(id: $id) {
+    level {
+      id
+    }
+    errors
+  }
+}

@@ -1,0 +1,8 @@
+mutation($id: ID!) {
+  destroyLesson(id: $id) {
+    lesson {
+      id
+    }
+    errors
+  }
+}

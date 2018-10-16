@@ -1,0 +1,8 @@
+query {
+  categories {
+    id
+    description
+    title
+    position
+  }
+}

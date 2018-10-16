@@ -1,0 +1,7 @@
+mutation($chapters: [ChapterInput!]!) {
+  updateChapters(chapters: $chapters) {
+    chapters {
+      id
+    }
+  }
+}

@@ -1,0 +1,23 @@
+mutation(
+  $id: ID!
+  $categoryId: ID!
+  $levelId: ID!
+  $chapterId: ID!
+  $title: String
+  $description: String
+) {
+  updateLesson(
+    id: $id
+    categoryId: $categoryId
+    levelId: $levelId
+    chapterId: $chapterId
+    title: $title
+    description: $description
+  ) {
+    lesson {
+      id
+      title
+    }
+    errors
+  }
+}
