@@ -25,7 +25,7 @@ v-container(v-if="lesson && categories && levels && chapters")
           v-model="lesson.chapter.id"
           label="Chapter"
         )
-    vue-editor(v-model="lesson.description")
+    vue-editor.edit-box(v-model="lesson.description")
   div(v-else)
     div.title {{ lesson.title || 'No title' }}
     br
@@ -37,7 +37,7 @@ v-container(v-if="lesson && categories && levels && chapters")
     br
     hr
     br
-    div(v-html="lesson.description || 'No description'")
+    p(v-html="lesson.description.replace(/ /g, '&nbsp') || 'No description'")
 </template>
 
 <script>
@@ -114,3 +114,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.edit-box {
+  height: 450px;
+}
+</style>
