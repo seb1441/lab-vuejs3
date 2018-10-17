@@ -1,5 +1,6 @@
 <template lang="pug">
 v-container(v-if="lesson && categories && levels && chapters")
+  v-btn(@click="$router.push({name: 'Lessons'})") Back
   v-btn(@click="toggleEditMode()") {{ editMode? 'Cancel' : 'Edit' }}
   v-btn(v-if="editMode", @click="save()") Save
   br
@@ -37,7 +38,8 @@ v-container(v-if="lesson && categories && levels && chapters")
     br
     hr
     br
-    p(v-html="lesson.description.replace(/ /g, '&nbsp') || 'No description'")
+    div(v-if="lesson.description", v-html="lesson.description.replace(/ /g, '&nbsp')")
+    div(v-else) No description
 </template>
 
 <script>

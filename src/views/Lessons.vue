@@ -43,16 +43,47 @@ v-container
         //- ) edit
         v-icon(
           small,
-          @click="deleteLesson(props.item.id)"
+          @click="deleteConfirmation(props.item)"
         ) delete
+          //- @click="deleteLesson(props.item.id)"
   br
   v-btn(@click="newLesson()", color="primary", round) New
+    v-dialog(
+      v-model="confirmationDialog.show",
+      max-width="290",
+      v-if="confirmationDialog.item"
+    )
+      v-card
+        v-card-title(class="headline") Deleting lesson
+
+        v-card-text 
+          | Are you sure you want to delete 
+          b {{ confirmationDialog.item.title }}
+          | ?
+
+        v-card-actions
+          v-spacer
+          v-btn(
+            color="green darken-1",
+            flat="flat",
+            @click="confirmationDialog.show = false"
+          ) Cancel
+
+          v-btn(
+            color="green darken-1",
+            flat="flat",
+            @click="deleteLesson(confirmationDialog.item.id)"
+          ) Yes
 </template>
 
 <script>
 export default {
   data() {
     return {
+      confirmationDialog: {
+        show: false,
+        item: null
+      },
       selectedCategory: null,
       selectedLevel: null,
       selectedChapter: null,
@@ -104,6 +135,10 @@ export default {
     }
   },
   methods: {
+    deleteConfirmation(item) {
+      this.confirmationDialog.item = item
+      this.confirmationDialog.show = true
+    },
     newLesson() {
       this.$apollo
         .mutate({
@@ -182,6 +217,8 @@ export default {
         .then(response => {
           if (!response.data.destroyLesson.errors.length) {
             this.$apollo.queries.lessons.refetch()
+            this.confirmationDialog.show = false
+            this.confirmationDialog.item = null
           }
         })
         .catch(error => {
