@@ -96,6 +96,18 @@ export default {
       ]
     }
   },
+  created() {
+    if (localStorage.getItem('selectedCategory'))
+      this.selectedCategory = JSON.parse(
+        localStorage.getItem('selectedCategory')
+      )
+
+    if (localStorage.getItem('selectedLevel'))
+      this.selectedLevel = JSON.parse(localStorage.getItem('selectedLevel'))
+
+    if (localStorage.getItem('selectedChapter'))
+      this.selectedChapter = JSON.parse(localStorage.getItem('selectedChapter'))
+  },
   apollo: {
     categories: {
       query: require('@/apollo/queries/categories.gql'),
@@ -159,6 +171,7 @@ export default {
         this.selectedCategory = null
       } else {
         this.selectedCategory = category
+        localStorage.setItem('selectedCategory', JSON.stringify(category))
       }
 
       this.$apollo.queries.lessons.refetch()
@@ -169,6 +182,7 @@ export default {
         this.selectedLevel = null
       } else {
         this.selectedLevel = level
+        localStorage.setItem('selectedLevel', JSON.stringify(level))
       }
 
       this.$apollo.queries.lessons.refetch()
@@ -178,6 +192,7 @@ export default {
         this.selectedChapter = null
       } else {
         this.selectedChapter = chapter
+        localStorage.setItem('selectedChapter', JSON.stringify(chapter))
       }
 
       this.$apollo.queries.lessons.refetch()
