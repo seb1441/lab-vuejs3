@@ -9,30 +9,12 @@ import Lesson from './views/lessons/Lesson.vue'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
-      name: 'Redirect',
-      // vue-router lets us define a redirect method, the target route `to` is available for the redirect function
-      // https://router.vuejs.org/en/essentials/redirect-and-alias.html
-      redirect: function(to) {
-        if (to.query.redirect) {
-          // This will clear the ?redirect=<path> from the end URL
-          var path = to.query.redirect
-          delete to.query.redirect
-          return {
-            path: '/' + path,
-            query: to.query
-          }
-        } else {
-          return {
-            path: '/lessons',
-            query: to.query
-          }
-        }
-      }
+      name: 'Home',
+      redirect: '/lessons'
     },
     {
       path: '/categories',
