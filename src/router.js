@@ -14,11 +14,6 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      redirect: '/categories'
-    },
-    {
-      path: '/',
       name: 'Redirect',
       // vue-router lets us define a redirect method, the target route `to` is available for the redirect function
       // https://router.vuejs.org/en/essentials/redirect-and-alias.html
