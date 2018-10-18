@@ -7,7 +7,7 @@ v-container
         v-model="filters.category",
         :items="categories.map(c => ({text: c.title, value: c.id}))",
         label="Category",
-        clearable,
+        clearable
       )
     v-flex(xs4)
       v-combobox(
@@ -15,7 +15,6 @@ v-container
         v-model="filters.level",
         :items="levels.map(c => ({text: c.title, value: c.id}))",
         label="Level",
-        @change="updateFilters()",
         clearable
       )
     v-flex(xs4)
@@ -24,7 +23,6 @@ v-container
         v-model="filters.chapter",
         :items="chapters.map(c => ({text: c.title, value: c.id}))",
         label="Chapter",
-        @change="updateFilters()",
         clearable
       )
   br
@@ -91,18 +89,9 @@ export default {
   data() {
     return {
       filters: {
-        category: {
-          text: null,
-          value: null
-        },
-        level: {
-          text: null,
-          value: null
-        },
-        chapter: {
-          text: null,
-          value: null
-        }
+        category: null,
+        level: null,
+        chapter: null
       },
       confirmationDialog: {
         show: false,
@@ -119,6 +108,7 @@ export default {
     }
   },
   created() {
+    this.loading = true
     if (localStorage.getItem('selectedCategory')) {
       this.filters.category = JSON.parse(
         localStorage.getItem('selectedCategory')
@@ -234,11 +224,6 @@ export default {
         .catch(error => {
           console.error(error)
         })
-    },
-    updateFilters() {
-      let changed = false
-
-      if (changed) this.$apollo.queries.lessons.refetch()
     }
   },
   watch: {
