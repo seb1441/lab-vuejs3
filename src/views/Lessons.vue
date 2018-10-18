@@ -2,28 +2,38 @@
 v-container
   v-layout(row, wrap)
     v-flex(xs4)
-      transition-group(name="fade")
-        v-list-tile.button(v-if="showCategory(category)", v-for="(category, index) in categories", :key="category.id", @click="selectCategory(category)")
-          v-list-tile-content
-            v-list-tile-title(text-xs-center) {{ category.title }}
-    transition(name="fade")
-      v-flex(v-if="selectedCategory", xs4)
-        transition-group(name="fade")
-          v-list-tile.button(v-if="showLevel(level)", v-for="(level, index) in levels", :key="level.id", @click="selectLevel(level)")
-            v-list-tile-content
-              v-list-tile-title {{ level.title }}
-    transition(name="fade")
-      v-flex(v-if="selectedLevel", xs4)
-        transition-group(name="fade")
-          v-list-tile.button(v-if="showChapter(chapter)", v-for="(chapter, index) in chapters", :key="chapter.id", @click="selectChapter(chapter)")
-            v-list-tile-content
-              v-list-tile-title {{ chapter.title }}
+      v-combobox(
+        v-if="categories",
+        v-model="filters.category",
+        :items="categories.map(c => ({text: c.title, value: c.id}))",
+        label="Category",
+        clearable,
+      )
+    v-flex(xs4)
+      v-combobox(
+        v-if="levels",
+        v-model="filters.level",
+        :items="levels.map(c => ({text: c.title, value: c.id}))",
+        label="Level",
+        @change="updateFilters()",
+        clearable
+      )
+    v-flex(xs4)
+      v-combobox(
+        v-if="chapters",
+        v-model="filters.chapter",
+        :items="chapters.map(c => ({text: c.title, value: c.id}))",
+        label="Chapter",
+        @change="updateFilters()",
+        clearable
+      )
   br
   v-data-table(
     :headers="headers",
     :items="lessons",
     hide-actions,
-    class="elevation-1"
+    class="elevation-1",
+    :loading="loading"
   )
     template(slot="items", slot-scope="props")
       td {{ props.item.title }}
@@ -80,13 +90,25 @@ v-container
 export default {
   data() {
     return {
+      filters: {
+        category: {
+          text: null,
+          value: null
+        },
+        level: {
+          text: null,
+          value: null
+        },
+        chapter: {
+          text: null,
+          value: null
+        }
+      },
       confirmationDialog: {
         show: false,
         item: null
       },
-      selectedCategory: null,
-      selectedLevel: null,
-      selectedChapter: null,
+      loading: false,
       headers: [
         { text: 'Title', value: 'title', sortable: false },
         { text: 'Category', value: 'category', sortable: false },
@@ -97,16 +119,19 @@ export default {
     }
   },
   created() {
-    if (localStorage.getItem('selectedCategory'))
-      this.selectedCategory = JSON.parse(
+    if (localStorage.getItem('selectedCategory')) {
+      this.filters.category = JSON.parse(
         localStorage.getItem('selectedCategory')
       )
+    }
 
-    if (localStorage.getItem('selectedLevel'))
-      this.selectedLevel = JSON.parse(localStorage.getItem('selectedLevel'))
+    if (localStorage.getItem('selectedLevel')) {
+      this.filters.level = JSON.parse(localStorage.getItem('selectedLevel'))
+    }
 
-    if (localStorage.getItem('selectedChapter'))
-      this.selectedChapter = JSON.parse(localStorage.getItem('selectedChapter'))
+    if (localStorage.getItem('selectedChapter')) {
+      this.filters.chapter = JSON.parse(localStorage.getItem('selectedChapter'))
+    }
   },
   apollo: {
     categories: {
@@ -126,7 +151,12 @@ export default {
       variables() {
         return this.variableFilters
       },
-      fetchPolicy: 'no-cache'
+      fetchPolicy: 'no-cache',
+      result(response) {
+        if (!response.loading) {
+          this.loading = false
+        }
+      }
     }
   },
   computed: {
@@ -135,13 +165,12 @@ export default {
         filters: {}
       }
 
-      if (this.selectedCategory)
-        variables.filters.categoryId = this.selectedCategory.id
-
-      if (this.selectedLevel) variables.filters.levelId = this.selectedLevel.id
-
-      if (this.selectedChapter)
-        variables.filters.chapterId = this.selectedChapter.id
+      if (this.filters.category)
+        variables.filters.categoryId = this.filters.category.value
+      if (this.filters.level)
+        variables.filters.levelId = this.filters.level.value
+      if (this.filters.chapter)
+        variables.filters.chapterId = this.filters.chapter.value
 
       return variables
     }
@@ -163,57 +192,23 @@ export default {
           console.error(error)
         })
     },
-    selectCategory(category) {
-      this.selectedLevel = null
-      this.selectedChapter = null
-
-      if (this.selectedCategory && this.selectedCategory.id === category.id) {
-        this.selectedCategory = null
-      } else {
-        this.selectedCategory = category
-        localStorage.setItem('selectedCategory', JSON.stringify(category))
-      }
-
-      this.$apollo.queries.lessons.refetch()
-    },
-    selectLevel(level) {
-      this.selectedChapter = null
-      if (this.selectedLevel && this.selectedLevel.id === level.id) {
-        this.selectedLevel = null
-      } else {
-        this.selectedLevel = level
-        localStorage.setItem('selectedLevel', JSON.stringify(level))
-      }
-
-      this.$apollo.queries.lessons.refetch()
-    },
-    selectChapter(chapter) {
-      if (this.selectedChapter && this.selectedChapter.id === chapter.id) {
-        this.selectedChapter = null
-      } else {
-        this.selectedChapter = chapter
-        localStorage.setItem('selectedChapter', JSON.stringify(chapter))
-      }
-
-      this.$apollo.queries.lessons.refetch()
-    },
     showCategory(category) {
-      if (this.selectedCategory) {
-        return this.selectedCategory.id === category.id
+      if (this.filters.category) {
+        return this.filters.category.value === category.id
       } else {
         return true
       }
     },
     showLevel(level) {
-      if (this.selectedLevel) {
-        return this.selectedLevel.id === level.id
+      if (this.filters.level) {
+        return this.filters.level.value === level.id
       } else {
         return true
       }
     },
     showChapter(chapter) {
-      if (this.selectedChapter) {
-        return this.selectedChapter.id === chapter.id
+      if (this.filters.chapter) {
+        return this.filters.chapter.value === chapter.id
       } else {
         return true
       }
@@ -239,6 +234,37 @@ export default {
         .catch(error => {
           console.error(error)
         })
+    },
+    updateFilters() {
+      let changed = false
+
+      if (changed) this.$apollo.queries.lessons.refetch()
+    }
+  },
+  watch: {
+    'filters.category'(newVal) {
+      if (newVal && newVal.value) {
+        this.loading = true
+        localStorage.setItem('selectedCategory', JSON.stringify(newVal))
+      } else {
+        localStorage.removeItem('selectedCategory')
+      }
+    },
+    'filters.level'(newVal) {
+      if (newVal && newVal.value) {
+        this.loading = true
+        localStorage.setItem('selectedLevel', JSON.stringify(newVal))
+      } else {
+        localStorage.removeItem('selectedLevel')
+      }
+    },
+    'filters.chapter'(newVal) {
+      if (newVal && newVal.value) {
+        this.loading = true
+        localStorage.setItem('selectedChapter', JSON.stringify(newVal))
+      } else {
+        localStorage.removeItem('selectedChapter')
+      }
     }
   }
 }

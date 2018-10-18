@@ -38,7 +38,8 @@ v-container(v-if="lesson && categories && levels && chapters")
     br
     hr
     br
-    div(v-if="lesson.description", v-html="lesson.description.replace(/ /g, '&nbsp')")
+    div(v-if="lesson.description", v-html="lesson.description.replace(/  /g, '&nbsp&nbsp')")
+    //- div(v-if="lesson.description", v-html="lesson.description")
     div(v-else) No description
 </template>
 
