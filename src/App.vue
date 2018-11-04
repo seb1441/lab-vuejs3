@@ -5,7 +5,7 @@
       v-model="drawer",
       enable-resize-watcher,
       fixed,
-      app
+      app,
     )
       v-list
         v-list-tile(
@@ -22,9 +22,11 @@
     v-toolbar(
       app
     )
-      v-toolbar-side-icon(@click.stop="drawer = !drawer")
+      v-toolbar-side-icon(v-if="currentUser", @click.stop="drawer = !drawer")
       v-toolbar-title(v-text="title")
       v-spacer
+      h4(v-if="currentUser") Welcome, {{ currentUser.username }}
+      v-btn(v-if="currentUser", @click="logout") Logout
     v-content
       router-view
     v-footer(app)
@@ -32,11 +34,27 @@
 </template>
 
 <script>
+import currentUser from './mixins/current-user'
+import { onLogout } from './vue-apollo'
+import CURRENT_USER from './apollo/queries/currentUser.gql'
+
 export default {
   name: 'App',
+  mixins: [currentUser],
   data() {
     return {
       drawer: false
+    }
+  },
+  created() {
+    this.checkLogin(this.$route.name, this.currentUser)
+  },
+  watch: {
+    '$route.name'(value) {
+      this.checkLogin(value, this.currentUser)
+    },
+    currentUser(value) {
+      this.checkLogin(this.$route.name, value)
     }
   },
   computed: {
@@ -48,8 +66,7 @@ export default {
       let items = []
 
       this.$router.options.routes.forEach(route => {
-        if (route.name === 'Home') return
-        if (route.name === 'Lesson') return
+        if (['Home', 'Login', 'Lesson'].includes(route.name)) return
 
         let item = {
           title: route.name,
@@ -77,6 +94,24 @@ export default {
         return 'button'
       } else {
         return null
+      }
+    },
+    async logout() {
+      if (!this.currentUser) return
+
+      const apolloClient = this.$apollo.provider.defaultClient
+
+      await onLogout(apolloClient)
+      apolloClient.writeQuery({
+        query: CURRENT_USER,
+        data: {
+          currentUser: null
+        }
+      })
+    },
+    checkLogin(routeName, currentUser) {
+      if (!currentUser && routeName !== 'Login') {
+        this.$router.replace({ name: 'Login' })
       }
     }
   }

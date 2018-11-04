@@ -5,6 +5,7 @@ import Levels from './views/Levels.vue'
 import Chapters from './views/Chapters.vue'
 import Lessons from './views/Lessons.vue'
 import Lesson from './views/lessons/Lesson.vue'
+import Login from './views/Login.vue'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
       path: '/lessons/:id',
       name: 'Lesson',
       component: Lesson
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
     }
   ]
 })
