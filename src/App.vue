@@ -28,7 +28,7 @@
       h4(v-if="currentUser") Welcome, {{ currentUser.username }}
       v-btn(v-if="currentUser", @click="logout") Logout
     v-content
-      router-view
+      router-view(v-if="currentUser || $route.name === 'Login'")
     v-footer(app)
       span &copy; 2017
 </template>
